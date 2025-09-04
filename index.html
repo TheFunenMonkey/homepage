@@ -1,31 +1,333 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Your Homepage</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Homebrew Club</title>
+  <meta name="description" content="A tiny, tasty homepage for our homemade beers." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🍺</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0b0f14;
+      --panel: #121821;
+      --panel-2: #0f141c;
+      --text: #e6eef8;
+      --muted: #9fb0c6;
+      --brand: #f7b500; /* beer gold */
+      --accent: #4ade80; /* hoppy green */
+      --danger: #ef4444;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius-xl: 22px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 800px at 85% -10%, rgba(247,181,0,.12), transparent 40%),
+                  radial-gradient(900px 600px at -10% 30%, rgba(74,222,128,.08), transparent 50%),
+                  var(--bg);
+      color:var(--text);
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      line-height: 1.6;
+      letter-spacing: 0.2px;
+    }
+    a{color:var(--brand); text-decoration: none}
+    a:hover{opacity:.9}
+
+    /* ====== Shell ====== */
+    .wrap{max-width:1200px; margin:0 auto; padding: 20px 22px}
+    header{
+      position: sticky; top:0; z-index: 10;
+      backdrop-filter: blur(8px);
+      background: color-mix(in oklab, var(--bg) 80%, transparent);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .bar{display:flex; align-items:center; gap:18px; padding:14px 0}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:800}
+    .logo{
+      width:38px; height:38px; border-radius: 12px; display:grid; place-items:center;
+      background: linear-gradient(160deg, #facc15, #f59e0b);
+      color:#171717; font-size:22px; box-shadow: var(--shadow);
+    }
+    .brand span{font-family: "Space Grotesk", Inter, system-ui; letter-spacing: 0.5px}
+    nav{margin-left:auto; display:flex; gap:14px; flex-wrap:wrap}
+    .pill{padding:10px 14px; border-radius:999px; background: #0e141c; border:1px solid rgba(255,255,255,.06)}
+    .pill:hover{border-color: rgba(255,255,255,.15)}
+
+    /* ====== Hero ====== */
+    .hero{padding: 48px 0 18px}
+    .hero .card{
+      display:grid; grid-template-columns: 1.2fr 1fr; gap:20px;
+      padding:28px; border-radius: var(--radius-xl);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08); box-shadow: var(--shadow);
+    }
+    .hero h1{margin:4px 0 8px; font-size: clamp(28px, 3vw, 42px); line-height:1.15; font-family:"Space Grotesk"}
+    .hero p{color:var(--muted); margin:0 0 18px}
+    .hero .stats{display:flex; gap:14px; flex-wrap:wrap}
+    .tag{border:1px solid rgba(255,255,255,.12); padding:8px 10px; border-radius:10px; background: #0e151e; color:#e9f1fb}
+    .cta{display:flex; gap:12px; margin-top:8px}
+    .btn{
+      padding:12px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.12); background:#0c131b; color:var(--text);
+      font-weight:600; cursor:pointer
+    }
+    .btn.primary{background: linear-gradient(180deg, #f7b500, #f59f00); color:#1b1303; border-color:#e8b10b}
+    .btn:hover{transform: translateY(-1px)}
+    .pour{
+      min-height:180px; border-radius: var(--radius-md); border:1px dashed rgba(255,255,255,.12);
+      display:grid; place-items:center; background: color-mix(in oklab, var(--panel) 96%, transparent);
+      font-size:14px; color:var(--muted)
+    }
+
+    /* ====== Section headings ====== */
+    h2.section{margin:34px 0 10px; font-family:"Space Grotesk"; font-size: clamp(22px, 2.4vw, 28px)}
+    p.kicker{margin:0 0 16px; color:var(--muted)}
+
+    /* ====== Beer Cards ====== */
+    .grid{display:grid; grid-template-columns: repeat(12, 1fr); gap: 16px}
+    .beer{grid-column: span 4; background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border:1px solid rgba(255,255,255,.08); border-radius: var(--radius-xl); overflow: clip; box-shadow: var(--shadow);
+      display:flex; flex-direction:column
+    }
+    .beer .art{height:160px; position:relative; display:flex; align-items:flex-end; justify-content:flex-start; padding:16px}
+    .beer .art .glass{position:absolute; right:16px; bottom:-6px; font-size:64px; filter: drop-shadow(0 4px 12px rgba(0,0,0,.35))}
+    .beer .body{padding:18px}
+    .beer h3{margin:0 0 6px}
+    .meta{display:flex; gap:8px; flex-wrap:wrap; font-size:12.5px; color:#cfe1fa}
+    .badge{padding:4px 8px; border-radius: 999px; border:1px solid rgba(255,255,255,.12); background:#0f1620}
+    .desc{margin:12px 0 6px; color:#dbe7f7}
+    .actions{display:flex; gap:8px; padding:0 18px 18px}
+    .actions .btn{flex:1}
+
+    /* SRM color chips */
+    .srm{width:14px; height:14px; border-radius:4px; display:inline-block; vertical-align:middle; margin-right:6px; border:1px solid rgba(0,0,0,.25)}
+
+    /* ====== Brew Log ====== */
+    .log{background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius-xl); overflow:hidden; box-shadow: var(--shadow)}
+    .log table{width:100%; border-collapse: collapse}
+    .log th, .log td{padding:14px 16px; text-align:left}
+    .log thead th{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; background: rgba(255,255,255,.02)}
+    .log tbody tr{border-top:1px solid rgba(255,255,255,.06)}
+    .log tbody tr:hover{background: rgba(255,255,255,.03)}
+
+    /* ====== About ====== */
+    .about{display:grid; grid-template-columns: 2fr 1fr; gap:16px}
+    .panel{
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border:1px solid rgba(255,255,255,.08); border-radius: var(--radius-xl); padding:20px; box-shadow:var(--shadow)
+    }
+
+    footer{margin: 28px 0 40px; color:var(--muted); text-align:center}
+
+    /* ====== Responsive ====== */
+    @media (max-width: 980px){
+      .hero .card{grid-template-columns: 1fr}
+      .beer{grid-column: span 6}
+      .about{grid-template-columns: 1fr}
+    }
+    @media (max-width: 640px){
+      .beer{grid-column: span 12}
+      nav{display:none}
+      .wrap{padding: 18px}
+    }
+  </style>
 </head>
 <body>
   <header>
-    <h1>Hello, world 👋</h1>
-    <nav>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
+    <div class="wrap bar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🍺</div>
+        <span>Homebrew Club</span>
+      </div>
+      <nav>
+        <a href="#beers" class="pill">Beers</a>
+        <a href="#log" class="pill">Brew Log</a>
+        <a href="#about" class="pill">About</a>
+        <a href="#contact" class="pill">Contact</a>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <section id="about">
-      <h2>About</h2>
-      <p>We’re building our first site with HTML, CSS, and JavaScript.</p>
+  <main class="wrap">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="card">
+        <div>
+          <h1>Small batch. Big smiles.</h1>
+          <p>We’re a handful of friends brewing ales, lagers, and the occasional wild idea. Explore our latest creations, browse the brew log, and steal a recipe or two.</p>
+          <div class="stats">
+            <span class="tag">Founded 2023</span>
+            <span class="tag">Mash temp: 66–68°C</span>
+            <span class="tag">House yeast: US‑05</span>
+          </div>
+          <div class="cta">
+            <a class="btn primary" href="#beers">See the beers</a>
+            <a class="btn" href="#log">View brew log</a>
+          </div>
+        </div>
+        <div class="pour">Drop a photo of your latest pour here 🍻 (or set as background)</div>
+      </div>
     </section>
+
+    <!-- Beers -->
+    <section id="beers">
+      <h2 class="section">Our beers</h2>
+      <p class="kicker">A rotating taplist of homebrew favourites. Edit the cards below to add your own.</p>
+
+      <div class="grid">
+        <!-- Beer card #1 -->
+        <article class="beer">
+          <div class="art" style="background:linear-gradient(180deg, #f7b500, #3d2f0d)">
+            <span class="badge">#001</span>
+            <div class="glass" aria-hidden="true">🥨</div>
+          </div>
+          <div class="body">
+            <h3>Golden Hour Kölsch</h3>
+            <div class="meta">
+              <span class="badge"><span class="srm" style="background:#F8D26A"></span>SRM 4</span>
+              <span class="badge">ABV 4.9%</span>
+              <span class="badge">IBU 22</span>
+              <span class="badge">YEAST: Kölsch</span>
+            </div>
+            <p class="desc">Clean, crisp, and lightly floral. Perfect for sunny afternoons and victory laps after bottling day.</p>
+          </div>
+          <div class="actions">
+            <a class="btn" href="#">Recipe</a>
+            <a class="btn" href="#">Tasting notes</a>
+          </div>
+        </article>
+
+        <!-- Beer card #2 -->
+        <article class="beer">
+          <div class="art" style="background:linear-gradient(180deg, #4ade80, #0b3d24)">
+            <span class="badge">#002</span>
+            <div class="glass" aria-hidden="true">🌿</div>
+          </div>
+          <div class="body">
+            <h3>Hop Garden Pale</h3>
+            <div class="meta">
+              <span class="badge"><span class="srm" style="background:#F4B454"></span>SRM 6</span>
+              <span class="badge">ABV 5.4%</span>
+              <span class="badge">IBU 34</span>
+              <span class="badge">HOPS: Citra / Mosaic</span>
+            </div>
+            <p class="desc">Juicy citrus and tropical notes over a cracker‑clean malt base. Crowd pleaser.</p>
+          </div>
+          <div class="actions">
+            <a class="btn" href="#">Recipe</a>
+            <a class="btn" href="#">Tasting notes</a>
+          </div>
+        </article>
+
+        <!-- Beer card #3 -->
+        <article class="beer">
+          <div class="art" style="background:linear-gradient(180deg, #78350f, #0f0b06)">
+            <span class="badge">#003</span>
+            <div class="glass" aria-hidden="true">🍫</div>
+          </div>
+          <div class="body">
+            <h3>Midnight Stout</h3>
+            <div class="meta">
+              <span class="badge"><span class="srm" style="background:#2B1B0E"></span>SRM 34</span>
+              <span class="badge">ABV 6.2%</span>
+              <span class="badge">IBU 28</span>
+              <span class="badge">YEAST: English Ale</span>
+            </div>
+            <p class="desc">Silky cocoa, roasted coffee, and a hint of vanilla. Best shared around a campfire.</p>
+          </div>
+          <div class="actions">
+            <a class="btn" href="#">Recipe</a>
+            <a class="btn" href="#">Tasting notes</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Brew Log -->
+    <section id="log">
+      <h2 class="section">Brew log</h2>
+      <p class="kicker">Dates, gravities, and quick notes to track our batches.</p>
+      <div class="log">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Beer</th>
+              <th>Brewed</th>
+              <th>OG</th>
+              <th>FG</th>
+              <th>ABV</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>001</td>
+              <td>Golden Hour Kölsch</td>
+              <td>2025‑07‑12</td>
+              <td>1.046</td>
+              <td>1.010</td>
+              <td>4.7%</td>
+              <td>Fermented @ 16°C for 10d, cold‑lagered 3w.</td>
+            </tr>
+            <tr>
+              <td>002</td>
+              <td>Hop Garden Pale</td>
+              <td>2025‑08‑02</td>
+              <td>1.054</td>
+              <td>1.012</td>
+              <td>5.5%</td>
+              <td>Dry hopped 60g Citra + 40g Mosaic day 4.</td>
+            </tr>
+            <tr>
+              <td>003</td>
+              <td>Midnight Stout</td>
+              <td>2025‑08‑24</td>
+              <td>1.062</td>
+              <td>1.016</td>
+              <td>6.0%</td>
+              <td>Added cacao nibs in secondary for 5 days.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- About / Contact -->
+    <section id="about">
+      <h2 class="section">About the crew</h2>
+      <p class="kicker">We brew in tiny kitchens and big backyards around Odense. New friends welcome.</p>
+      <div class="about">
+        <div class="panel">
+          <h3>Our philosophy</h3>
+          <p>Keep it simple, keep it clean. We love approachable styles, dialled‑in processes, and sharing what we learn. If a batch teaches us something, we post it here.</p>
+          <ul>
+            <li>Water first: Ca:SO<sub>4</sub> ~ 2:1 for pales; bump Cl for malty styles.</li>
+            <li>Fermentation control beats fancy gadgets.</li>
+            <li>Fresh hops, fresh crush, fresh yeast.</li>
+          </ul>
+        </div>
+        <aside class="panel" id="contact">
+          <h3>Contact</h3>
+          <p><strong>Email:</strong> <a href="mailto:hello@homebrew.club">hello@homebrew.club</a><br>
+          <strong>Insta:</strong> <a href="#">@homebrew.club</a></p>
+          <p>Want to collaborate or swap bottles? Ping us – we’re always up for a tasting.</p>
+        </aside>
+      </div>
+    </section>
+
+    <footer>
+      Made with love, grain, hops, yeast, and water · © <span id="year"></span> Homebrew Club
+    </footer>
   </main>
 
-  <footer>
-    <small>© <span id="year"></span> Your Names</small>
-  </footer>
-
-  <script src="script.js"></script>
+  <script>
+    // Tiny niceties
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
